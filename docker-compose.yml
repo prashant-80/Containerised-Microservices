@@ -1,0 +1,52 @@
+version: '3.8'
+networks:
+  microservice-network:
+    driver: bridge
+
+volumes:
+  api-gateway-node-modules:
+  flights-service-node-modules:
+  booking-service-node-modules:
+
+services:
+  api_gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    networks:
+      - microservice-network 
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api-gateway:/developer/nodejs/api_gateway
+      - api-gateway-node-modules:/developer/nodejs/api_gateway/node_modules
+  flights_service:
+    build:
+      context: ./Flight_search
+      dockerfile: Dockerfile
+    networks:
+      - microservice-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Flight_search:/developer/nodejs/flights_service
+      - flights-service-node-modules:/developer/nodejs/flights_service/node_modules
+  booking_service:
+    build:
+      context: ./Booking_service
+      dockerfile: Dockerfile
+    networks:
+      - microservice-network
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./Booking_service:/developer/nodejs/booking_service
+      - booking-service-node-modules:/developer/nodejs/booking_service/node_modules
+    
+#rm -rf .git //removes the git repository
+#docker compose up --build //runs all containers in detached mode
+#docker compose up //runs all containers in attached mode
+#docker compose up -d //runs all containers in detached mode
+#docker compose down //stops all containers
+#docker compose down -v //stops all containers and removes all volumes
+#docker compose down -v --rmi all //stops all containers and removes all containers, images, and volumes
